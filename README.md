@@ -5,176 +5,309 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/Python-3.9+-3776AB.svg?logo=python&logoColor=white" alt="Python Version"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20vLLM%20|%20verl-orange" alt="Powered By"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20vLLM%20|%20MCP-orange" alt="Powered By"></a>
 </p>
 
-### Overview
+---
 
-FinTalk.ai represents a paradigm shift in applying Large Language Models to the financial sector. It is an end-to-end, multi-agent framework designed to bridge the chasm between the generative capabilities of LLMs and the stringent, data-driven demands of financial analysis.
+## Overview
+
+FinTalk.ai is a cutting-edge multi-agent framework designed to bridge the gap between Large Language Model capabilities and the rigorous demands of financial analysis. Built upon the **OSWorld Environment** for secure, reproducible execution, it employs an **Orchestrator-Worker architecture** to interpret natural language queries, interact with structured databases, perform deterministic computations, and synthesize factually grounded intelligence.
 
 <p align="center">
   <img src="assets/structure_v2.png" alt="FinTalk.ai System Architecture" width="800"/>
 </p>
 
-Operating within a secure and reproducible **OSWorld Environment**, FinTalk.ai employs a sophisticated **Orchestrator-Worker architecture** to interpret complex, natural language queries, interact with proprietary structured databases, perform deterministic computations, and synthesize factually grounded, trustworthy intelligence. It is engineered to solve the fundamental challenges of data privacy, computational cost, and LLM hallucination, providing a scalable blueprint for next-generation financial AI assistants.
+## What's New
 
-### The FinTalk.ai Philosophy
+### MCP Integration (Model Context Protocol)
 
-Our design is guided by three core principles:
+FinTalk.ai now integrates **MCP architecture** for enhanced capabilities:
 
-1.  **Grounded Cognition:** Every piece of information presented to the user must be traceable to a verifiable source—a specific row in our database or the result of a deterministic calculation. We systematically eliminate opportunities for factual hallucination.
-2.  **Resource-Efficient Scalability:** We reject the brute-force approach of deploying numerous large models. Our architecture is optimized for maximum capability with a minimal resource footprint, making advanced AI accessible and operationally viable.
-3.  **Verifiable and Reproducible Research:** By building upon a standardized environment like OSWorld, we ensure our framework is not a black box. Its operations are transparent, and its performance is robustly and reproducibly measurable.
+- **🧠 Parallel Model Execution** - Execute multiple LLM tasks simultaneously for reduced latency
+- **✏️ Query Rewriting** - Context-aware query enhancement based on conversation history
+- **⚖️ Arbitration Mechanism** - Intelligent query classification (task/knowledge/small_talk/invalid)
+- **🛡️ Rejection Detection** - Filter irrelevant queries automatically
+- **🔗 Correlation Analysis** - Multi-turn conversation context tracking
+- **🔧 Function Calling** - OpenAI-style function registry for financial operations
+- **📡 Streaming NLG** - Real-time natural language generation
+- **💬 Conversation Management** - Dialog history and slot management
 
-### Core Innovations
+### GitHub API Integration
 
-FinTalk.ai is not merely an application of existing technologies but a synthesis of several novel approaches to solve foundational problems in applied AI.
+- **🔍 GitHub Search** - Search repositories via public API
+- **📝 Repository Management** - Create/update files, manage branches and issues directly through MCP tools
+- **📊 Complete Audit Logging** - All MCP communications logged in `mcp_integration/logs/`
 
-#### 1. The Asymmetric, Resource-Efficient Multi-Agent Architecture
-We address the scaling dilemma of multi-agent systems with an asymmetric design. Instead of deploying multiple monolithic models, we utilize a single, powerful **Orchestrator Agent (`Qwen3-8B`)** for high-level cognition and a single, lightweight **Worker Agent (`Qwen2.5-7B-Instruct-1M`)** that embodies a suite of specialized skills. By leveraging **Punica Scheduling** to dynamically serve task-specific **LoRA adapters**, our Worker Agent functions as an on-demand team of experts (Classifier, Keyword Extractor, NL2SQL Coder) while maintaining the inference cost and memory footprint of just one model.
+---
 
-#### 2. The Grounded Orchestration Pipeline
-To combat the stochastic and unreliable nature of LLM calculations, we introduce a **Decomposition and Grounding** pipeline. The Orchestrator strictly adheres to a ReAct-style, closed-loop reasoning process. It deconstructs complex queries into a sequence of atomic operations: delegating structured data translation, executing verifiable SQL queries against the database, and channeling the precise numerical results into a deterministic **Formula Tool**. This rigorously enforced separation of cognitive planning from deterministic execution guarantees factual and mathematical accuracy.
+## Core Features
 
-#### 3. Privacy-Preserving Synthetic Data Engine
-We solve the "data scarcity and privacy paradox" for NL2SQL training with a novel synthetic data generation engine. This pipeline leverages a powerful external LLM (`DeepSeek`/`Gemini`) in a zero-knowledge fashion. By providing only the database **schema** and employing a **dynamic prompt generation** strategy—which randomizes few-shot examples and provides in-context negative feedback to avoid repetition—we stimulate the creation of a massive, diverse, and complex training curriculum. Crucially, **vector-based semantic deduplication** using **Qwen3-Embedding-8B** ensures the quality and diversity of the final dataset, all without ever exposing the sensitive proprietary data to an external service. The script for this engine is available at `data_generation/generate_sft_data.py`.
+### 1. Grounded Cognition
 
-#### 4. The Standardized Agentic Testbed
-The entire framework is built upon the **OSWorld Environment**, which serves as a secure, sandboxed, and standardized "operating theater" for all agent actions. This is more than a technical choice; it is a commitment to rigorous and scientific evaluation. It ensures that our experiments are not only secure but also robust and reproducible, setting a benchmark for the development and assessment of financial AI agents.
+Every piece of information is traceable to a verifiable source—a specific database row or a deterministic calculation result. Systematic elimination of factual hallucination.
 
-### System Architecture Deep Dive
+### 2. Resource-Efficient Architecture
 
-The architecture is a dual-agent system operating within OSWorld:
+Asymmetric multi-agent design:
+- **Orchestrator Agent** (`Qwen3-8B`) - High-level reasoning and planning
+- **Worker Agent** (`Qwen2.5-7B-Instruct-1M`) - Specialized skills via dynamic LoRA serving
+- **Punica Scheduling** - On-demand specialist deployment
 
-#### The Orchestrator Agent: The Cognitive Hub
--   **Model:** `Qwen3-8B`
--   **Role:** Acts as the central nervous system. It is responsible for high-level reasoning, strategic planning, multi-step task decomposition, and final answer synthesis.
--   **Deployment:** Served via **vLLM** for optimized, high-throughput inference.
+### 3. Verifiable & Reproducible
 
-#### The Worker Agent: The On-Demand Specialist Team
--   **Model:** `Qwen2.5-7B-Instruct-1M`
--   **Role:** Functions as a collection of specialized, fine-tuned tools that the Orchestrator can call upon demand.
--   **Specialized Skills (via LoRA):**
-    1.  **Keyword Extraction (KE): The Semantic Front Door.** Acts as a "noise reducer" and "cognitive triage" system. It parses unstructured, colloquial user input into a structured set of entities, allowing the Orchestrator to perform **strategic routing**.
-    2.  **Classification (CLS):** A mechanism to classify user intent, guiding the Orchestrator's initial strategy.
-    3.  **NL2SQL:** The high-precision tool for converting clean instructions from the Orchestrator into accurate and executable SQL queries.
+Built upon **OSWorld Environment** for secure, sandboxed, and standardized agent execution. Ensures transparent, robust, and reproducible experimental results.
 
-### The Data Foundation: Database Schema
+---
 
-FinTalk.ai operates on a proprietary database schema consisting of four core tables. This structured data forms the "ground truth" for all of the agent's reasoning.
+## System Architecture
 
-#### 1. `companies` Table
-The master table containing comprehensive profile information for each company, serving as the central hub.
-*   **Source File:** `company.csv`
-*   **Total Records:** 607
+### Dual-Agent System in OSWorld
 
-| Field Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `company_sort_id` | INTEGER | **Primary Key.** Unique numerical identifier for each company. |
-| `name` | TEXT | The official name of the company. |
-| `website` | TEXT | The official website URL. |
-| `employee_size`| INTEGER | A numerical representation of the total number of employees. |
-| `techSummary` | TEXT | A detailed description of the company's technology stack and strategy. |
-| `...` | `...` | *(A total of 39 columns, including location, status, funding, and license details)* |
+#### The Orchestrator Agent
+- **Model:** `Qwen3-8B`
+- **Role:** Central nervous system for high-level reasoning, strategic planning, and answer synthesis
+- **Deployment:** Served via **vLLM** for optimized inference
 
-#### 2. `employees` Table
-A denormalized view containing high-level company information, including employee counts and tech summaries.
-*   **Source File:** `employee_noTech.csv`
-*   **Total Records:** 1,079
+#### The Worker Agent
+- **Model:** `Qwen2.5-7B-Instruct-1M`
+- **Role:** Specialized tools via LoRA adapters
+- **Skills:**
+  1. **Keyword Extraction** - Semantic parsing and entity recognition
+  2. **Classification** - Intent classification for strategic routing
+  3. **NL2SQL** - High-precision SQL query generation
 
-| Field Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `company_sort_id` | INTEGER | **Foreign Key** linking to the `companies` table. |
-| `website` | TEXT | The official website URL. |
-| `employee_size` | INTEGER | Approximate integer value for the total number of employees. |
-| `size_category` | TEXT | A categorical label for the company's size. |
-| `tech_summary` | TEXT | A detailed description of the company's technology strategy. |
+### MCP Core Modules
 
-#### 3. `management` Table
-Contains detailed records for the management and executive teams of the companies.
-*   **Source File:** `management.csv`
-*   **Total Records:** 2,970
+```
+enhanced_core/
+├── parallel_executor.py     # Parallel task execution
+├── query_rewriter.py        # Context-based query rewriting
+├── arbitrator.py            # Query type classification
+├── rejection_detector.py    # Query filtering
+├── correlation_checker.py   # Multi-turn context tracking
+├── function_registry.py     # Financial function definitions
+├── conversation_manager.py  # Dialog history management
+└── streaming_nlg.py         # Streaming output & NLG
+```
 
-| Field Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `company_sort_id` | INTEGER | **Foreign Key** linking to the `companies` table. |
-| `management_name` | TEXT | The full name of the executive or manager. |
-| `management_title`| TEXT | The official job title of the individual. |
-| `management_department` | TEXT | The functional area the individual belongs to. |
-| `director_type` | TEXT | A categorical tag specifying the type of directorship, if applicable. |
+### MCP External Tools
 
-#### 4. `shareholders` Table
-Details the ownership structure of the companies, listing their key investors and stakeholders.
-*   **Source File:** `shareholder.csv`
-*   **Total Records:** 2,208
+```
+mcp_integration/
+├── mcp_client.py            # Real API integrations (no mock data)
+│   ├── GitHub Search        # Public API, no auth required
+│   ├── GitHub Repo Manager  # Full CRUD operations
+│   ├── Google Search        # (Requires API key)
+│   ├── Alpha Vantage        # Stock prices (Requires API key)
+│   └── NewsAPI              # Financial news (Requires API key)
+└── logs/                    # Complete audit trail
+```
 
-| Field Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `company_sort_id` | INTEGER | **Foreign Key** linking to the `companies` table. |
-| `shareholder_name`| TEXT | The name of the investing entity or individual. |
-| `shareholder_description` | TEXT | A brief description of the shareholder. |
-| `share_percentage` | FLOAT | The ownership percentage held by the shareholder. |
-| `shareholder_tag` | TEXT | A categorical tag for the type of investor. |
+---
 
-### Training & Refinement: The Path to Expertise
+## Database Schema
+
+### 1. `companies` Table
+Master table containing comprehensive company profiles.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | **Primary Key**, unique identifier |
+| `name` | TEXT | Official company name |
+| `website` | TEXT | Official website URL |
+| `employee_size` | INTEGER | Total employee count |
+| `techSummary` | TEXT | Technology stack description |
+| ... | ... | *(39 columns total)* |
+
+**Records:** 607 companies
+
+### 2. `management` Table
+Executive and management team details.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | **Foreign Key** to companies |
+| `management_name` | TEXT | Executive name |
+| `management_title` | TEXT | Job title |
+| `director_type` | TEXT | Directorship classification |
+
+**Records:** 2,970 executives
+
+### 3. `shareholders` Table
+Ownership structure and investor information.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | **Foreign Key** to companies |
+| `shareholder_name` | TEXT | Investor name |
+| `share_percentage` | FLOAT | Ownership percentage |
+| `shareholder_tag` | TEXT | Investor type classification |
+
+**Records:** 2,208 shareholders
+
+---
+
+## Quick Start
+
+### 1. Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/boris-dotv/fintalk.ai.git
+cd fintalk.ai
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+pip install python-dotenv requests
+```
+
+### 2. Configuration
+
+Copy `.env.example` to `.env` and configure your API keys:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your credentials:
+
+```bash
+# Required for GitHub integration
+GITHUB_TOKEN=your_github_token_here
+
+# Optional (for extended features)
+GOOGLE_API_KEY=your_google_api_key
+GOOGLE_CSE_ID=your_google_cse_id
+ALPHA_VANTAGE_KEY=your_alpha_vantage_key
+NEWS_API_KEY=your_news_api_key
+
+# LLM API
+LLM_API_KEY=your_llm_api_key
+LLM_API_URL=https://qianfan.baidubce.com/v2/chat/completions
+```
+
+### 3. Run the Demo
+
+**Option 1: Interactive Demo (Recommended)**
+```bash
+python run.py
+```
+
+**Option 2: Direct MCP Demo**
+```bash
+python demos/demo_with_mcp.py
+```
+
+**Option 3: GitHub Integration Test**
+```bash
+python tests/test_github_mcp.py
+```
+
+---
+
+## Training Pipeline
 
 ![FinTalk.ai Training Strategy](assets/training.png)
 
--   **Supervised Fine-Tuning (SFT):** The NL2SQL LoRA is first trained on the large-scale, high-diversity synthetic dataset generated by our privacy-preserving pipeline.
--   **Reinforcement Learning (RL) Refinement:** The SFT-tuned model is further enhanced using the **`verl`** framework with **Group Relative Policy Optimization (GRPO)**. The policy is refined using a **rule-based, verifiable reward signal**: a reward is granted only if the generated SQL executes successfully and produces the correct result.
+### Training Stages
 
-### Quick Start Guide
+1. **Supervised Fine-Tuning (SFT)**
+   - NL2SQL LoRA trained on large-scale synthetic dataset
+   - Privacy-preserving data generation pipeline
+   - Vector-based semantic deduplication with Qwen3-Embedding-8B
 
-#### 1. Prerequisites
--   An environment with Python 3.9+ and `conda` or `venv`.
--   NVIDIA GPUs with sufficient VRAM for 8B-scale models.
--   An API Key for the DeepSeek API (for optional data generation).
-
-#### 2. Installation & Setup
-```bash
-# Clone the repository
-git clone https://github.com/your-username/fintalk.ai.git
-cd fintalk.ai
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install modelscope for model downloads
-pip install modelscope
-```
-
-#### 3. Model Acquisition
-The following commands will download the necessary models into a local `models/` directory.
-```bash
-# Download the Orchestrator Agent model
-modelscope download --model 'Qwen/Qwen3-8B' --local_dir 'models/Qwen3-8B'
-
-# Download the Worker Agent base model
-modelscope download --model 'Qwen/Qwen2.5-7B-Instruct-1M' --local_dir 'models/Qwen2.5-7B-Instruct-1M'
-
-# Download the Embedding Model for data deduplication
-modelscope download --model 'Qwen/Qwen3-Embedding-8B' --local_dir 'models/Qwen3-Embedding-8B'
-```
-
-#### 4. Data Pipeline
--   **Proprietary Data:** Place your `company.csv`, `employee_noTech.csv`, `management.csv`, and `shareholder.csv` files in the `/data` directory.
--   **Generate SFT Data (Recommended):** To train a high-performance NL2SQL worker, run the synthetic data generation script.
-    ```bash
-    python data_generation/generate_sft_data.py
-    ```
-
-#### 5. System Launch
-*(Instructions on launching the vLLM and Punica services, and running the main application will be added here.)*
-
-### Future Work
-
--   **Towards Cognitive Autonomy:** Evolve the agent's capabilities to include dynamic formula generation and robust self-correction loops.
--   **Multi-Modal Data Fusion:** Integrate hybrid reasoning over both structured and unstructured documents.
--   **Sophisticated Agentic Collaboration:** Introduce a "Reviewer Agent" to create a more resilient generate-review-refine workflow.
+2. **Reinforcement Learning Refinement**
+   - **verl** framework with **Group Relative Policy Optimization (GRPO)**
+   - Rule-based verifiable reward signals
+   - Reward granted only for successful SQL execution with correct results
 
 ---
-Random Test:
 
-```bash
-source venv/bin/activate
+## Project Structure
+
 ```
+fintalk.ai/
+├── run.py                    # Unified entry point
+├── enhanced_fintalk.py       # Main application
+├── formula.py                # Financial formula library
+│
+├── enhanced_core/            # MCP core modules (8 modules)
+├── mcp_integration/          # MCP external tools
+├── demos/                    # Demo collection
+├── tests/                    # Test suite
+├── OSWorld/                  # OSWorld integration
+├── data/                     # Database files
+│
+├── .env                      # API keys (not in repo)
+├── .env.example             # Configuration template
+├── requirements.txt          # Python dependencies
+├── STRUCTURE.md             # Detailed project docs
+└── API_REFERENCE.md         # API documentation
+```
+
+---
+
+## Available Functions
+
+### Local Database Functions
+
+- `get_company_info` - Retrieve company profile information
+- `get_executive_director_ratio` - Calculate executive director ratio
+- `get_top_shareholders` - Get top N shareholders
+- `calculate_shareholder_concentration` - Compute ownership concentration
+- `compare_companies` - Compare two companies across metrics
+
+### MCP External Tools
+
+- `search_github` - Search GitHub repositories
+- `github_repo_manager` - Full GitHub CRUD operations (get/create/update files, issues, branches)
+- `web_search` - Google Custom Search (requires API key)
+- `get_stock_price` - Real-time stock quotes (requires API key)
+- `get_financial_news` - Financial news aggregation (requires API key)
+
+---
+
+## Example Usage
+
+### Query Examples
+
+**Local Database:**
+```
+User: "What is ZA Bank's employee size?"
+User: "Calculate executive_director_ratio for WeLab Bank"
+User: "Compare ZA Bank and WeLab Bank on shareholder concentration"
+```
+
+**GitHub Integration:**
+```
+User: "Search GitHub for model context protocol implementations"
+User: "Get the content of enhanced_fintalk.py from my repo"
+User: "Create a new file demo.py with hello world code"
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- **Qwen Team** for the excellent language models
+- **OSWorld** for the standardized agent environment
+- **vLLM & Punica** for efficient model serving
+- **verl** for the RL framework
+- **Model Context Protocol** community for the integration pattern
